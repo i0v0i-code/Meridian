@@ -1,5 +1,9 @@
 # Meridian
 
+> Custom fork: optional trusted PROXY protocol v1/v2 support for the controller
+> ingress. See [configuration and security notes](docs/proxy-protocol.md).
+> Docker Hub: `bolocolo/meridian:v1.11.3-proxyproto.1`.
+
 [![CI](https://github.com/chanhui800/Meridian/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/chanhui800/Meridian/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/chanhui800/Meridian)](https://github.com/chanhui800/Meridian/releases/latest)
 [![License](https://img.shields.io/github/license/chanhui800/Meridian)](LICENSE)

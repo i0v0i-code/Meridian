@@ -14,6 +14,15 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -buildvcs=false -ld
 # Runtime stage
 FROM alpine:3.24@sha256:28bd5fe8b56d1bd048e5babf5b10710ebe0bae67db86916198a6eec434943f8b
 
+ARG VERSION=dev
+ARG SOURCE_REVISION=unknown
+ARG DISTRIBUTION_VERSION=dev
+LABEL org.opencontainers.image.source="https://github.com/i0v0i-code/Meridian" \
+      org.opencontainers.image.version="${DISTRIBUTION_VERSION}" \
+      org.opencontainers.image.revision="${SOURCE_REVISION}" \
+      work.i0v0i.meridian.upstream-version="${VERSION}" \
+      org.opencontainers.image.description="Meridian with opt-in trusted PROXY protocol ingress"
+
 RUN apk add --no-cache ca-certificates libcap su-exec tzdata
 
 WORKDIR /app

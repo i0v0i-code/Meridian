@@ -179,6 +179,10 @@ func main() {
 	if err != nil {
 		log.Fatalf("invalid trusted proxy configuration: %v", err)
 	}
+	panelProxyProtocolCIDRs, err := parsePanelProxyProtocolCIDRs(os.Getenv("PANEL_PROXY_PROTOCOL_TRUSTED_CIDRS"))
+	if err != nil {
+		log.Fatalf("invalid panel PROXY protocol configuration: %v", err)
+	}
 	clientIPRegions, err := newClientIPRegionResolver(os.Getenv("CLIENT_IP_REGION_ENDPOINT"), nil)
 	if err != nil {
 		log.Fatalf("invalid client IP region configuration: %v", err)
@@ -369,10 +373,12 @@ func main() {
 	for _, failure := range listenerFailures {
 		log.Printf("panel %s listener unavailable on %s: %v", failure.spec.network, failure.spec.address, failure.err)
 	}
-	if panelTLSEnabled {
-		for i, listener := range panelListeners {
-			panelListeners[i] = tls.NewListener(listener, panelTLSConfig)
+	for i, listener := range panelListeners {
+		listener = wrapPanelProxyProtocol(listener, panelProxyProtocolCIDRs)
+		if panelTLSEnabled {
+			listener = tls.NewListener(listener, panelTLSConfig)
 		}
+		panelListeners[i] = listener
 	}
 	// Keep the rollback marker until the restored database, TLS configuration,
 	// proxy sites, and panel listener have all initialized successfully. A fatal
