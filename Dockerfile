@@ -31,11 +31,12 @@ RUN addgroup -S meridian && \
     mkdir -p /app/data && \
     chown meridian:meridian /app/data && \
     chmod 0700 /app/data
-COPY --from=builder --chown=root:root --chmod=0555 /app/meridian /app/meridian
-COPY --from=builder --chown=root:root --chmod=0555 /app/meridian-agent-linux-amd64 /app/meridian-agent-linux-amd64
-COPY --from=builder --chown=root:root --chmod=0555 /app/meridian-agent-linux-arm64 /app/meridian-agent-linux-arm64
-COPY --chown=root:root --chmod=0555 docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-RUN setcap cap_net_bind_service=+ep /app/meridian && \
+COPY --from=builder --chown=root:root /app/meridian /app/meridian
+COPY --from=builder --chown=root:root /app/meridian-agent-linux-amd64 /app/meridian-agent-linux-amd64
+COPY --from=builder --chown=root:root /app/meridian-agent-linux-arm64 /app/meridian-agent-linux-arm64
+COPY --chown=root:root docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod 0555 /app/meridian /app/meridian-agent-linux-amd64 /app/meridian-agent-linux-arm64 /usr/local/bin/docker-entrypoint.sh && \
+    setcap cap_net_bind_service=+ep /app/meridian && \
     getcap /app/meridian | grep -Fq 'cap_net_bind_service=ep'
 
 EXPOSE 9090
